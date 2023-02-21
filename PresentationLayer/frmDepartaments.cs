@@ -26,14 +26,12 @@ namespace EmployeeAdministrator.PresentationLayer
             if (txtDepartamentName.Text == string.Empty)
             {
                 ErrorNotification.SetError(txtDepartamentName, "Empty data is not allowed");
+                return;
             }
-            else
-            {
-                var newDepartament = getDataForm();
-                _businessLayerDepartament.InsertDepartaments(newDepartament);
-                PopulateDataGrid();
-                CleanForm();
-            }
+            var newDepartament = getDataForm();
+            _businessLayerDepartament.InsertDepartaments(newDepartament);
+            PopulateDataGrid();
+            CleanForm();
         }
 
         private void frmDepartaments_Load(object sender, EventArgs e)
@@ -53,9 +51,8 @@ namespace EmployeeAdministrator.PresentationLayer
 
         private void dgvDepartaments_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            txtCode.Text = dgvDepartaments.Rows[e.RowIndex].Cells[0].Value.ToString();
-            txtDepartamentName.Text = dgvDepartaments.Rows[e.RowIndex].Cells[1].Value.ToString();
-
+            txtCode.Text = dgvDepartaments.Rows[dgvDepartaments.CurrentRow.Index].Cells[0].Value.ToString();
+            txtDepartamentName.Text = dgvDepartaments.Rows[dgvDepartaments.CurrentRow.Index].Cells[1].Value.ToString();
             EditMode();
         }
      
@@ -103,6 +100,7 @@ namespace EmployeeAdministrator.PresentationLayer
         {
             txtCode.Text = string.Empty;
             txtDepartamentName.Text = string.Empty;
+            ErrorNotification.Clear();
         }
 
         private void btnModify_Click(object sender, EventArgs e)
