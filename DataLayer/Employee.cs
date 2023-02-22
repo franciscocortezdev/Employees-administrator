@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -54,7 +55,7 @@ namespace EmployeeAdministrator.DataLayer
 
         public void InsertEmployee(BusinessLayer.Employee employee)
         {
-            string query = "INSERT INTO Employees (Name) VALUES (@Name)";
+            string query = "INSERT INTO Employees (Name, LastName, Email, Photo) VALUES (@Name, @LastName, @Email, @Photo)";
 
             using (SqlConnection ConnetionDB = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
@@ -64,12 +65,17 @@ namespace EmployeeAdministrator.DataLayer
                     {
                         ConnetionDB.Open();
                         command.Parameters.Add(new SqlParameter("@Name", employee.Name));
+                        command.Parameters.Add(new SqlParameter("@LastName", employee.LastName));
+                        command.Parameters.Add(new SqlParameter("@Email", employee.Email));
+
+                        command.Parameters.Add("@Photo", SqlDbType.Image).Value = (object)employee.Photo ?? DBNull.Value;
+
                         command.ExecuteNonQuery();
 
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"An error has occurred: {ex.Message}");
+                        MessageBox.Show($"An error has occurred: {ex.Message} Route: {ex.StackTrace}");
                     }
                 }
             }

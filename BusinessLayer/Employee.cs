@@ -28,15 +28,15 @@ namespace EmployeeAdministrator.BusinessLayer
             return _dataLayerEmployee.GetEmployees();
         }
 
-        public void InsertDepartaments(Employee employee)
+        public void InsertEmployee(Employee employee)
         {
             _dataLayerEmployee.InsertEmployee(employee);
         }
-        public void UpdateDepartaments(Employee employee)
+        public void UpdateEmployee(Employee employee)
         {
             _dataLayerEmployee.UpdateEmployee(employee);
         }
-        public void DeleteDepartaments(Employee employee)
+        public void DeleteEmployee(Employee employee)
         {
             _dataLayerEmployee.DeleteEmployee(employee);
         }
