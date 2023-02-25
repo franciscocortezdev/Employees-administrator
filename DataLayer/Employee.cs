@@ -37,7 +37,8 @@ namespace EmployeeAdministrator.DataLayer
                                     Name = reader.GetString(1),
                                     LastName= reader.GetString(2),
                                     Email= reader.GetString(3),
-                                    Photo = !reader.IsDBNull(4) ? (byte[])reader.GetValue(4) : null
+                                    Photo = !reader.IsDBNull(4) ? (byte[])reader.GetValue(4) : null,
+                                    Departament = reader.GetInt32(5)
                                 });
                             }
 
@@ -55,7 +56,7 @@ namespace EmployeeAdministrator.DataLayer
 
         public void InsertEmployee(BusinessLayer.Employee employee)
         {
-            string query = "INSERT INTO Employees (Name, LastName, Email, Photo) VALUES (@Name, @LastName, @Email, @Photo)";
+            string query = "INSERT INTO Employees (Name, LastName, Email, Photo, IdDepartament) VALUES (@Name, @LastName, @Email, @Photo, @IdDepartament)";
 
             using (SqlConnection ConnetionDB = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
@@ -69,9 +70,9 @@ namespace EmployeeAdministrator.DataLayer
                         command.Parameters.Add(new SqlParameter("@Email", employee.Email));
 
                         command.Parameters.Add("@Photo", SqlDbType.Image).Value = (object)employee.Photo ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@IdDepartament", employee.Departament));
 
                         command.ExecuteNonQuery();
-
                     }
                     catch (Exception ex)
                     {
@@ -83,8 +84,7 @@ namespace EmployeeAdministrator.DataLayer
 
         public void UpdateEmployee(BusinessLayer.Employee employee)
         {
-            string query = "UPDATE Employees SET Name = @Name WHERE Id = @Id";
-
+            string query = "UPDATE Employees SET Name = @Name, LastName = @LastName, Email = @Email, Photo = @Photo, IdDepartament = @IdDepartament WHERE Id = @Id";
             using (SqlConnection ConnetionDB = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
                 using (SqlCommand command = new SqlCommand(query, ConnetionDB))
@@ -93,7 +93,12 @@ namespace EmployeeAdministrator.DataLayer
                     {
                         ConnetionDB.Open();
                         command.Parameters.Add(new SqlParameter("@Name", employee.Name));
+                        command.Parameters.Add(new SqlParameter("@LastName", employee.LastName));
+                        command.Parameters.Add(new SqlParameter("@Email", employee.Email));
                         command.Parameters.Add(new SqlParameter("@Id", employee.Id));
+                        command.Parameters.Add("@Photo", SqlDbType.Image).Value = (object)employee.Photo ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@IdDepartament", employee.Departament));
+
                         command.ExecuteNonQuery();
 
                     }
