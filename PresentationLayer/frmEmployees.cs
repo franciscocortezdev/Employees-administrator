@@ -30,8 +30,6 @@ namespace EmployeeAdministrator.PresentationLayer
         {
             PopulateDataGrid();
             PopulateComboBox();
-
-           
         }
 
         private void dgvEmployee_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -44,6 +42,7 @@ namespace EmployeeAdministrator.PresentationLayer
             txtLastName.Text = employee.LastName;
             txtEmail.Text = employee.Email;
             picPhoto.Image = employee.Photo != null ? (Image)imgConverter.ConvertFrom(employee.Photo) : null;
+            cbxDepartament.SelectedValue = employee.Departament;
 
             EditMode();
 
@@ -73,7 +72,13 @@ namespace EmployeeAdministrator.PresentationLayer
             }
             if (txtEmail.Text == string.Empty)
             {
-                ErrorProvEmployee.SetError(txtName, "Empty data is not allowed");
+                ErrorProvEmployee.SetError(txtEmail, "Empty data is not allowed");
+                return;
+            }
+
+            if (cbxDepartament.SelectedItem == null)
+            {
+                ErrorProvEmployee.SetError(cbxDepartament, "Empty data is not allowed");
                 return;
             }
 
@@ -83,10 +88,27 @@ namespace EmployeeAdministrator.PresentationLayer
             CleanForm();
         }
 
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            var EmployeeSelected = getDataForm();
+            _businessLayerEmployee.DeleteEmployee(EmployeeSelected);
+            PopulateDataGrid();
+            CleanForm();
+            SaveMode();
+        }
+
+        private void btnModify_Click(object sender, EventArgs e)
+        {
+            var EmployeeSelected = getDataForm();
+            _businessLayerEmployee.UpdateEmployee(EmployeeSelected);
+            PopulateDataGrid();
+            CleanForm();
+            SaveMode();
+
+        }
 
         #endregion
 
-        
 
         private void EditMode()
         {
@@ -111,6 +133,7 @@ namespace EmployeeAdministrator.PresentationLayer
             txtEmail.Text = string.Empty;
             cbxDepartament.SelectedIndex = -1;
             picPhoto.Image= null;
+            ErrorProvEmployee.Clear();
         }
 
         private void PopulateDataGrid()
@@ -138,14 +161,11 @@ namespace EmployeeAdministrator.PresentationLayer
             newEmployee.LastName = txtLastName.Text;
             newEmployee.Email = txtEmail.Text;
             newEmployee.Photo = picPhoto.Image != null ? (byte[])imgConverter.ConvertTo(picPhoto.Image, typeof(byte[])) : null;
-
+            newEmployee.Departament = (int)cbxDepartament.SelectedValue;
 
             return newEmployee;
         }
 
-
-       
-
-
+        
     }
 }
